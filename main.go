@@ -3,18 +3,27 @@ package main
 import (
 	"finance-app/internal/api"
 	"finance-app/internal/db"
+	"finance-app/internal/models"
 
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
+	// Initialize DB
 	db.Connect()
+	db.DB.AutoMigrate(&models.Transaction{})
 
-	router := gin.Default()
+	// Initialize Router
+	r := gin.Default()
 
-	router.POST("/transactions", api.CreateTransaction)
-	router.GET("/transactions", api.GetTransactions)
-	router.GET("/summary", api.GetSummary)
+	// Routes
+	r.POST("/transactions", api.CreateTransaction)
+	r.GET("/transactions", api.GetTransactions)
+	r.GET("/transactions/:id", api.GetTransactionByID)
+	r.PUT("/transactions/:id", api.UpdateTransaction)
+	r.DELETE("/transactions/:id", api.DeleteTransaction)
+	r.GET("/summary", api.GetSummary)
 
-	router.Run(":8080")
+	// Start server
+	r.Run(":8080")
 }

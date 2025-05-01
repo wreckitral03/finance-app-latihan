@@ -1,11 +1,23 @@
 package models
 
-import "time"
+import (
+	"time"
+
+	"github.com/google/uuid"
+	"gorm.io/gorm"
+)
 
 type Transaction struct {
-	ID        uint      `gorm:"primaryKey" json:"id"`
-	Amount    float64   `json:"amount"`
-	Type      string    `json:"type"` // "income" or "expense"
-	Category  string    `json:"category"`
+	ID        uuid.UUID `json:"id" gorm:"type:uuid;primaryKey"`
+	Type      string    `json:"type" binding:"required,oneof=income expense"`
+	Amount    float64   `json:"amount" binding:"required,gt=0"`
+	Note      string    `json:"note"`
 	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+}
+
+// BeforeCreate will set a UUID rather than numeric ID.
+func (t *Transaction) BeforeCreate(tx *gorm.DB) (err error) {
+	t.ID = uuid.New()
+	return
 }
