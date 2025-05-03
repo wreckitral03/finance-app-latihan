@@ -34,8 +34,12 @@ func Connect() {
 	}
 
 	// Run migrations on the Transaction model
-	if err := database.AutoMigrate(&models.Transaction{}); err != nil {
+	log.Println("Connecting to DB:", dsn)
+	err = database.AutoMigrate(&models.Transaction{})
+	if err != nil {
 		log.Fatal("Migration failed:", err)
+	} else {
+		log.Println("Migration successful.")
 	}
 
 	// Set the global DB variable

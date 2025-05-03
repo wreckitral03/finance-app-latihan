@@ -8,6 +8,7 @@ import (
 )
 
 type Transaction struct {
+	gorm.Model
 	ID        uuid.UUID `json:"id" gorm:"type:uuid;primaryKey"`
 	Type      string    `json:"type" binding:"required,oneof=income expense"`
 	Amount    float64   `json:"amount" binding:"required,gt=0"`
